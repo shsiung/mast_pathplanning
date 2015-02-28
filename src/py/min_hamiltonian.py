@@ -31,6 +31,10 @@ class MinHamiltonian:
             diff = np.array(path[ind]) - np.array(path[ind+1])
             cost = cost + linalg.norm(diff)
 
+            # 3d case, penalise height change
+            if len(diff) == 3:
+                cost += diff[2] ** 2
+
         # add distances of end points to start and end
         diffStart = np.array(self.startPoint) - np.array(path[0])
         diffEnd = np.array(self.endPoint) - np.array(path[-1])
