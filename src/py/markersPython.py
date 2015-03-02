@@ -68,13 +68,14 @@ marker_link.scale.x=0.1
 
 count = 0
 MARKERS_MAX = 30
-BOUNDARY = 10;
+BOUNDARY = 50;
 
 # Using the travelling salesman algs to find a traversal
 def tsp():
     randX = np.random.random_sample(MARKERS_MAX)*BOUNDARY*2-BOUNDARY
     randY = np.random.random_sample(MARKERS_MAX)*BOUNDARY*2-BOUNDARY
     randZ = np.random.random_sample(MARKERS_MAX)*BOUNDARY/2
+
 
     coords = np.matrix.transpose(np.array([randX, randY, randZ]))
     startPoint = coords[0]

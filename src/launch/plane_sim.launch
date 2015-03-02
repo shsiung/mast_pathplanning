@@ -1,9 +1,9 @@
 <launch>
   <param name="robot_description" textfile="/home/shsiung/catkin_ws/src/using_markers/src/urdf/airplane.xml"/>
 
-  <node pkg="using_markers" type="simulated_plane.py" name="sim_plane" output="screen">
+  <node pkg="using_markers" type="point_tracker.py" name="point_track" output="screen">
   </node>
-
+  
   <node pkg="using_markers" type="markersPython.py" name="path_planning" output="screen">
   </node>
 </launch>

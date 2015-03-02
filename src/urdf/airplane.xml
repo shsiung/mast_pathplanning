@@ -1,7 +1,7 @@
 <robot name = "plane">
   <link name = "/odom">
     <visual>
-      <origin rpy="0 0 0" xyz="0.12 -0.38 0.18"/>
+      <origin rpy="0 0 1.57" xyz="0.25 0.14 0.23"/>
        <geometry>
         <mesh filename = "package://using_markers/src/urdf/SU-25.STL" scale="0.0001 0.0001 0.0001"/>
       </geometry>

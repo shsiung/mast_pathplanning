@@ -9,10 +9,12 @@ import signal
 import time
 import numpy
 
+YAW_DOT_MAX = pi/3
+
 def rad_to_degrees(rad):
     return rad*180/pi
 
-class simulated_plane():
+class Sim_Plane():
 
     # Constructor for initializing simulated plane state
     def __init__(self):
@@ -22,7 +24,7 @@ class simulated_plane():
         self.x = 0
         self.y = 0
         self.z = 0
-        self.x_dot = 0.1
+        self.x_dot = 2
         self.y_dot = 0
         self.z_dot = 0
 
@@ -32,7 +34,7 @@ class simulated_plane():
         self.yaw = 0
         self.roll_dot = 0
         self.pitch_dot = 0
-        self.yaw_dot = pi/100
+        self.yaw_dot = YAW_DOT_MAX
 
         self.deltaT = 0.01;  #second
 
@@ -42,23 +44,20 @@ class simulated_plane():
         self.odomMsg.child_frame_id = "odom"
 
     def update_state(self):
-
-        #print self.yaw
         dist = self.x_dot * self.deltaT
         self.x += dist * cos(self.yaw)
         self.y += dist * sin(self.yaw)
         self.yaw += self.yaw_dot * self.deltaT
-        # self.z += self.x_dot * sin(self.p) * self.deltaT
 
 
     def broadcast_state(self):
 
         self.odomMsg.header.stamp = rospy.Time.now()
-        self.odomMsg.pose.pose.position.x = 0
-        self.odomMsg.pose.pose.position.y = 2
+        self.odomMsg.pose.pose.position.x = self.x
+        self.odomMsg.pose.pose.position.y = self.y
         self.odomMsg.pose.pose.position.z = 0
 
-        quat = tf.transformations.quaternion_from_euler(0, 0, 0)
+        quat = tf.transformations.quaternion_from_euler(0, 0, self.yaw)
 
         self.odomMsg.pose.pose.orientation.x = quat[0]
         self.odomMsg.pose.pose.orientation.y = quat[1]
@@ -74,17 +73,21 @@ class simulated_plane():
                 (self.odomMsg.pose.pose.orientation.x,self.odomMsg.pose.pose.orientation.y,
                     self.odomMsg.pose.pose.orientation.z,self.odomMsg.pose.pose.orientation.w),
                     rospy.Time.now(),
-                    "map",
                     "odom",
+                    "map",
         )
 
-        def halt(self, *args):
-                self.r.halt()
-                rospy.core.signal_shutdown("sigint")
+    def halt(self, *args):
+        self.r.halt()
+        rospy.core.signal_shutdown("sigint")
+
+    def get_plane_state(self):
+        return (self.x, self.y, self.z)
 
 if __name__== "__main__":
-    robot = simulated_plane()
+    robot = Sim_Plane()
     while not rospy.is_shutdown():
+        robot.get_plane_state()
         robot.update_state()
         robot.broadcast_state()
         rospy.sleep(robot.deltaT)
